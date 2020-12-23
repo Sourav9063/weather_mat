@@ -12,12 +12,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Color(0xffA8DADC),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -41,14 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Location location = Location();
-
+  WeatherData weatherData = WeatherData();
   void getFinaldata() async {
-    WeatherData weatherData = WeatherData();
-
     var finaldata = await weatherData.currentWeather();
-    var hourdata=await weatherData.allWeatherData();
+    var hourdata = await weatherData.allWeatherData();
     // print(finaldata);
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return CurrentWeather(
         currentWeatherData: finaldata,
         hourData: hourdata,
@@ -63,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // String iconss = finaldata['weather'][0]['icon'];
     // getFinaldata();
     return Scaffold(
+      backgroundColor: Color(0xff1b4332),
       body: Center(
         child: Column(
           children: <Widget>[

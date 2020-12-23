@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -35,17 +36,19 @@ class _SearchPageState extends State<SearchPage> {
   Widget animationss;
   WeatherData weatherData = WeatherData();
 
-  double windspeed;
-  int winddir;
+  var windspeed;
+  var winddir;
 
   String hM;
   String hD;
 
+  List<Card> listCard = [];
   @override
   void initState() {
     super.initState();
     updateUI(widget.currentWeatherData);
     updateHourUI(widget.hourData);
+    getList(48);
     // print(widget.currentWeatherData);
   }
 
@@ -66,14 +69,21 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  void getList(int n) {
+    for (int i = 0; i < n; i++) {
+      listCard.add(hourlyList(i));
+    }
+  }
+
   Card hourlyList(int hours) {
     // print(hourDatas);
     String iconssh;
     String time;
-    var tmpd = hourDatas['hourly'][hours]['temp'];
-    String tmp = tmpd.toString();
 
     setState(() {
+      var tmpd = hourDatas['hourly'][hours]['temp'];
+      String tmp = tmpd.toString();
+
       tmp = tmp.substring(0, 2);
 
       hM = hourDatas['hourly'][hours]['weather'][0]['main'];
@@ -86,7 +96,13 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     return Card(
+      // borderOnForeground: false,
+      // margin: EdgeInsets.all(2),
+      color: Colors.white70,
+
       child: ListTile(
+        // contentPadding: EdgeInsets.all()
+
         title: Text(hM),
         subtitle: Text('$hD\n$tmp°C'),
         isThreeLine: true,
@@ -126,6 +142,99 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget getWeatherIcon(int condition) {
+    //   if (condition < 210) {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Thunder',
+    //       thunderConfig: ThunderConfig(
+    //         thunderColor: Colors.white,
+    //         thunderWidth: 4,
+    //       ),
+    //     );
+    //   } else if (condition < 300) {
+    //     return WeatherWidget(
+    //         size: Size.infinite,
+    //         weather: 'Thunder',
+    //         thunderConfig: ThunderConfig(
+    //           thunderColor: Colors.white,
+    //         ));
+    //   } else if (condition < 310) {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Cloudy',
+    //       cloudConfig: CloudConfig(
+    //           bottomColor: Colors.blueAccent, topColor: Colors.blueGrey.shade700),
+    //     );
+    //   } else if (condition < 400) {
+    //     return WeatherWidget(
+    //         size: Size.infinite,
+    //         weather: 'Rainy',
+    //         rainConfig: RainConfig(rainNum: 80, rainLength: 7));
+    //   } else if (condition < 502) {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Cloudy',
+    //       cloudConfig: CloudConfig(
+    //           bottomColor: Colors.blueAccent, topColor: Colors.blueGrey.shade700),
+    //     );
+    //   } else if (condition < 600) {
+    //     return WeatherWidget(
+    //         size: Size.infinite,
+    //         weather: 'Rainy',
+    //         rainConfig: RainConfig(rainNum: 100));
+    //   } else if (condition < 700) {
+    //     return WeatherWidget(
+    //         size: Size.infinite,
+    //         weather: 'Snowy',
+    //         snowConfig: SnowConfig(snowNum: 10));
+    //   } else if (condition < 800) {
+    //     if (condition == 741 ||
+    //         condition == 701 ||
+    //         condition == 711 ||
+    //         condition == 781) {
+    //       return WeatherWidget(
+    //         weather: 'Sunny',
+    //         size: Size.infinite,
+    //         sunConfig: SunConfig(
+    //             sunBlurStyle: BlurStyle.normal,
+    //             sunInColor: Colors.white,
+    //             sunOutColor: Colors.grey,
+    //             bottomColor: Colors.grey,
+    //             topColor: Colors.blueGrey),
+    //       );
+    //     } else if (condition == 721) {
+    //       return WeatherWidget(
+    //           weather: 'Sunny',
+    //           size: Size.infinite,
+    //           sunConfig:
+    //               SunConfig(bottomColor: Colors.grey, topColor: Colors.blueGrey));
+    //     } else {
+    //       return WeatherWidget(
+    //         size: Size.infinite,
+    //         weather: 'Sunny',
+    //         sunConfig: SunConfig(),
+    //       );
+    //     }
+    //   } else if (condition == 800) {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Sunny',
+    //       sunConfig: SunConfig(),
+    //     );
+    //   } else if (condition <= 804) {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Cloudy',
+    //       cloudConfig: CloudConfig(bottomColor: Colors.blueAccent),
+    //     );
+    //   } else {
+    //     return WeatherWidget(
+    //       size: Size.infinite,
+    //       weather: 'Cloudy',
+    //       cloudConfig: CloudConfig(topColor: Colors.black26),
+    //     );
+    //   }
+    // }
     if (condition < 210) {
       return WeatherWidget(
         size: Size.infinite,
@@ -207,14 +316,26 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.currentWeatherData);
+    // print(widget.currentWeatherData);
 
     return Container(
         child: SafeArea(
             child: Scaffold(
-              backgroundColor: Colors.blue.shade900,
+      backgroundColor: Colors.blue.shade900,
       body: Column(
         children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Hero(
+              tag: 'world',
+              child: FlareActor(
+                'assets/WorldSpin.flr',
+                animation: 'roll',
+                alignment: Alignment.topCenter,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
           Expanded(
               flex: 1,
               child: Column(
@@ -297,7 +418,7 @@ class _SearchPageState extends State<SearchPage> {
                                   child: Text(
                                     'Sunrise: $formattedSunrise\n Sunset: $formattedSunset',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
+                                        color: Colors.white, fontSize: 20),
                                   ),
                                 ),
                               ],
@@ -311,24 +432,37 @@ class _SearchPageState extends State<SearchPage> {
 
                               children: <Widget>[
                                 Expanded(
+                                  flex: 2,
                                   child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                       child: Image.network(
                                           'http://openweathermap.org/img/wn/$iconss@2x.png')),
                                 ),
-                                Text(
-                                  condition,
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                                Text(descrip),
                                 Expanded(
-                                  child: WindIcon(
-                                    degree: winddir,
-                                    size: 70,
-                                    color: Colors.white,
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Text(
+                                      condition,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Text('$windspeed m/s$conditionNum'),
+                                Expanded(child: Text(descrip)),
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: WindIcon(
+                                      degree: winddir,
+                                      size: 70,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                    child:
+                                        Center(child: Text('$windspeed m/s'))),
                                 SizedBox(
                                   height: 10,
                                 )
@@ -343,22 +477,29 @@ class _SearchPageState extends State<SearchPage> {
               )),
 
           Expanded(
-              flex: 4,
-              child: ListView(
+            flex: 4,
+            child: ListView(
+                physics: BouncingScrollPhysics(),
                 padding: EdgeInsets.all(10),
-                children: <Widget>[
-                  hourlyList(0),
-                  hourlyList(1),
-                  hourlyList(2),
-                  hourlyList(3),
-                  hourlyList(4),
-                  hourlyList(5),
-                  hourlyList(6),
-                  hourlyList(7),
-                  hourlyList(8),
-                  hourlyList(9),
-                ],
-              )),
+                children: listCard
+                //  <Widget>[
+
+                //   // hourlyList(0),
+                //   // hourlyList(1),
+                //   // hourlyList(2),
+                //   // hourlyList(3),
+                //   // hourlyList(4),
+                //   // hourlyList(5),
+                //   // hourlyList(6),
+                //   // hourlyList(7),
+                //   // hourlyList(8),
+                //   // hourlyList(9),
+                //   // hourlyList(10),
+                //   // hourlyList(11),
+                //   // hourlyList(12),
+                // ],
+                ),
+          ),
 
           // weather[0].icon
         ],
